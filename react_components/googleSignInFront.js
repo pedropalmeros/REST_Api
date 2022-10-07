@@ -5,8 +5,6 @@ const googleSignInFront = () => {
     function handleCredentialResponse(response) {
 
         // Google Token: ID_TOKEN
-        console.log('id_token: ',response.credential);
-
         const body = { id_token: response.credential};
 
         fetch('http://localhost:8080/api/auth/google',{
@@ -18,7 +16,6 @@ const googleSignInFront = () => {
         })
         .then( resp => resp.json())
         .then( resp => {
-            console.log(resp);
         })
         .catch(console.warn );
 

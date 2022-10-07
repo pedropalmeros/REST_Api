@@ -51,12 +51,32 @@ const googleSignIn = async(req = request, res = response) => {
     const {id_token} = req.body;
     
     try{
-        const googleUser = await googleValidator(id_token);
-        console.log(googleUser);
+        const { email, name, img} = await googleValidator(id_token);
+
+        let user = await User.findOne({email});
+        if( !user ){// User does not exist
+            const data = { // Creating the data for the user
+                name,
+                email,
+                password: 'Not_Needed',
+                role: 'USER_ROLE',
+                img,
+                google: true
+            }
+
+            user = new User( data );
+            await user.save();
+        }
+
+
+        const token = await generateJWT(user.id);
+
 
         res.json({
             msg: "All OK till now",
-            id_token
+            name,
+            email
+            
         })
     } catch (error){
         json.status(400).json({

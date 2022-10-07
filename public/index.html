@@ -26,12 +26,12 @@
         data-logo_alignment="left">
     </div>
 
+    <button id="google_signout">
+        SignOut
+    </button>
+
     <script>
         function handleCredentialResponse(response) {
-
-            // Google Token: ID_TOKEN
-            console.log('id_token: ',response.credential);
-
             const body = { id_token: response.credential};
 
             fetch('http://localhost:8080/api/auth/google',{
@@ -43,9 +43,18 @@
             })
             .then( resp => resp.json())
             .then( resp => {
-                console.log(resp);
+                localStorage.setItem('email',resp.email);
             })
             .catch(console.warn );
+        }
+
+        const buttonSignout = document.getElementById('google_signout');
+        buttonSignout.onclick = () => {
+            google.accounts.id.disableAutoSelect();
+            google.accounts.id.revoke(localStorage.getItem('email')),done=>{
+                localStorage.clear();
+                location.reaload();
+            }
 
         }
     </script>
